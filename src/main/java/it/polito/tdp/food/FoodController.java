@@ -40,7 +40,7 @@ public class FoodController {
     private Button btnCammino; // Value injected by FXMLLoader
 
     @FXML // fx:id="boxPorzioni"
-    private ComboBox<?> boxPorzioni; // Value injected by FXMLLoader
+    private ComboBox<String> boxPorzioni; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -55,6 +55,11 @@ public class FoodController {
     void doCorrelate(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Cerco porzioni correlate...");
+    	if (boxPorzioni.getItems().size() == 0)
+    		txtResult.setText("Devi prima creare il grafo premendo su \"Analisi\"");
+    	else {
+    		txtResult.setText(this.model.getCorrelazioni(boxPorzioni.getValue()));
+    	}
     	
     }
 
@@ -62,6 +67,17 @@ public class FoodController {
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
     	txtResult.appendText("Creazione grafo...");
+    	
+    	try {
+    		Integer t = Integer.parseInt(txtCalorie.getText());
+    		String s = this.model.creaGrafo(t);
+    		txtResult.setText(s);
+    		boxPorzioni.getItems().setAll(this.model.getVertici(t));
+    	} catch (NumberFormatException e) {
+    		e.printStackTrace();
+    		txtResult.setText("Devi inserire un valore intero.");
+    	}
+    	
     	
     }
 
